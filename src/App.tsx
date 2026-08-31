@@ -4,7 +4,10 @@ import HandleDebounce from "./components/HandleDebounce";
 function App() {
   return (
     <>
-      <HandleDebounce />
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-700">
+        <h1>React-useEffect-SearchDebounceApp</h1>
+        <HandleDebounce />
+      </div>
     </>
   );
 }
