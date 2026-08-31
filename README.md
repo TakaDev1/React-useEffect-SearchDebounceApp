@@ -1,32 +1,113 @@
-# React + TypeScript + Vite
+# React-useEffect-SearchDebounceApp
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Reactの `useEffect` を使って、検索入力のデバウンス処理を実装する練習用アプリです。
 
-Currently, two official plugins are available:
+## 📌 概要
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+検索キーワードが入力されるたびにタイマーを開始し、一定時間入力がなければ検索処理を実行します。
 
-## React Compiler
+入力中に新しい文字が入力された場合は、前のタイマーを `clearTimeout` で解除してから新しいタイマーを開始します。
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 🛠 使用技術
 
-## Expanding the Oxlint configuration
+* React
+* TypeScript
+* Vite
+* Tailwind CSS
+* useState
+* useEffect
+* setTimeout
+* clearTimeout
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+## 📂 コンポーネント構成
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```text
+src/
+├── components/
+│   ├── HandleDebounce.tsx
+│   └── SearchInput.tsx
+├── App.tsx
+└── main.tsx
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+### HandleDebounce.tsx
+
+デバウンス処理と検索キーワードの状態管理を担当します。
+
+* `useState` で `query` を管理
+* `useEffect` でデバウンス処理を実行
+* `setTimeout` で一定時間後に検索処理を実行
+* `clearTimeout` で古いタイマーを解除
+* `SearchInput` に `query` と `setQuery` をPropsとして渡す
+
+### SearchInput.tsx
+
+検索キーワードの入力欄を担当します。
+
+* `query` を入力値として表示
+* `setQuery` で入力された文字列を更新
+* Tailwind CSSで入力欄を装飾
+
+## 🔄 処理の流れ
+
+```text
+ユーザーが入力
+      ↓
+queryを更新
+      ↓
+useEffect実行
+      ↓
+setTimeout開始
+      ↓
+入力が続いた場合
+      ↓
+前のタイマーをclearTimeoutで解除
+      ↓
+新しいタイマーを開始
+      ↓
+入力が一定時間止まる
+      ↓
+検索処理を実行
+```
+
+## ⏱ デバウンス処理
+
+```tsx
+useEffect(() => {
+  const id = setTimeout(() => {
+    console.log(`検索: ${query}`);
+  }, 1000);
+
+  return () => {
+    clearTimeout(id);
+  };
+}, [query]);
+```
+
+`query` が変更されるたびに `useEffect` が実行されます。
+
+新しい入力によって `query` が変更されると、前回の `useEffect` のクリーンアップが実行され、以前のタイマーが解除されます。
+
+そのため、ユーザーが入力を止めてから一定時間経過した場合のみ検索処理が実行されます。
+
+## 🎯 学習ポイント
+
+* `useState` による入力値の状態管理
+* `useEffect` の依存配列
+* `setTimeout` による遅延処理
+* `clearTimeout` によるタイマー解除
+* `useEffect` のクリーンアップ
+* デバウンス処理の仕組み
+* Propsによるコンポーネント間のデータ受け渡し
+* React.ChangeEventによるイベント型付け
+
+## 🚀 起動方法
+
+```bash
+npm install
+npm run dev
+```
+
+ブラウザでアプリを開き、検索欄に文字を入力してください。
+
+入力を止めて一定時間経過すると、ブラウザのコンソールに検索キーワードが表示されます。
