@@ -12,6 +12,8 @@ const SearchInput = ({ query, setQuery }: SearchInputProps) => {
         type="text"
         value={query}
         onChange={(event: React.ChangeEvent<HTMLInputElement>) => setQuery(event.target.value)}
+        className="border text-white"
+        placeholder="Input Text"
       />
     </div>
   );
